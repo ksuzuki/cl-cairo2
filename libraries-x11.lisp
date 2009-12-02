@@ -1,7 +1,7 @@
 (in-package :cl-cairo2)
 
-;; is this really needed?  OS should set this up properly
-#+darwin (pushnew "/usr/X11/lib/" *foreign-library-directories*)
+;;;; Loading X11 and GDK libraries - you are supposed to set them up on the
+;;;; path where the system loader looks up.
 
 (define-foreign-library :libX11
   (:darwin "libX11.dylib")
