@@ -15,29 +15,37 @@
 										(:file "text" :depends-on ("context"))
 										(:file "transformations" :depends-on ("context"))
 										(:file "pattern" :depends-on ("context" "surface" "tables" "transformations" "cl-cairo2-swig"))))
+
   (defparameter *cairo-win32-surface* '((:file "package-win32" :depends-on ("package"))
 										(:file "cl-cairo2-win32-swig" :depends-on ("cl-cairo2-swig"))
 										(:file "win32" :depends-on ("cl-cairo2-win32-swig"))))
+
   (defparameter *cairo-xlib-surface* '((:file "package-xlib" :depends-on ("package"))
 									   (:file "cl-cairo2-xlib-swig" :depends-on ("cl-cairo2-swig"))
 									   (:file "libraries-x11" :depends-on ("cl-cairo2-xlib-swig"))
 									   (:file "xlib" :depends-on ("libraries-x11"))
 									   (:file "xlib-image-context" :depends-on ("xlib"))))
+
   (defparameter *cairo-quartz-surface* '((:file "package-quartz" :depends-on ("package"))
 										 (:file "cl-cairo2-quartz-swig" :depends-on ("cl-cairo2-swig"))))
+
   ;; Where did these gdk stuff come from??
   (defparameter *cairo-gdk-surface* '((:file "libraries-gdk" :depends-on ("libraries-xlib"))
 									  (:file "gtk-context" :depends-on ("libraries-gdk"))))
 
-  (defparameter *fc-pairs* (list (cons :cairo-base-surfaces *cairo-base-surfaces*)
-								 #+(or windows windows-target) (cons :cairo-win32-surface *cairo-win32-surface*)
-								 (cons :cairo-xlib-surface *cairo-xlib-surface*)
-								 #+(or darwin darwin-target) (cons :cairo-quartz-surface *cairo-quartz-surface*)
-								 #+cairo-gdk-surface (cons :cairo-gdk-surface *cairo-gdk-surface*)))
+  ;; feature-component map
+  (defparameter *fc-map* (list (cons :cairo-base-surfaces *cairo-base-surfaces*)
+							   (cons :cairo-xlib-surface *cairo-xlib-surface*)
+							   #+(or windows windows-target)
+							   (cons :cairo-win32-surface *cairo-win32-surface*)
+							   #+(and (or darwin darwin-target) cairo-quartz-surface-available)
+							   (cons :cairo-quartz-surface *cairo-quartz-surface*)
+							   #+cairo-gdk-surface-available
+							   (cons :cairo-gdk-surface *cairo-gdk-surface*)))
 
   (defmacro defsystem-cl-cairo2 (components)
 	`(defsystem cl-cairo2
-	   :description "Cairo 1.8 bindings"
+	   :description "Cairo 1.6 bindings"
 	   :version "0.5"
 	   :author "Tamas K Papp"
 	   :license "GPL"
@@ -48,11 +56,11 @@
 	(let ((components (reduce #'(lambda (cs fc) (if (member (car fc) *features*)
 													(append cs (cdr fc))
 													cs))
-										*fc-pairs* :initial-value nil))
+										*fc-map* :initial-value nil))
 		  (features (reduce #'(lambda (fs fc) (if (member (car fc) *features*)
 												  (cons (car fc) fs)
 												  fs))
-							*fc-pairs* :initial-value nil)))
+							*fc-map* :initial-value nil)))
 	  (values
 	   (if (member :cairo-base-surfaces-only *features*)
 		   *cairo-base-surfaces*
@@ -61,7 +69,7 @@
 					   (if (and (member :cairo-gdk-surface features) (not (member :cairo-xlib-surface features)))
 						   (append *cairo-xlib-surface* components)
 						   components))
-			   (reduce #'(lambda (cs fc) (append cs (cdr fc))) *fc-pairs* :initial-value nil)))
+			   (reduce #'(lambda (cs fc) (append cs (cdr fc))) *fc-map* :initial-value nil)))
 	   (if (member :cairo-base-surfaces-only *features*)
 		   '(:cairo-base-surfaces-only)
 		   (if features
@@ -69,7 +77,7 @@
 					   (if (and (member :cairo-gdk-surface features) (not (member :cairo-xlib-surface features)))
 						   (append '(:cairo-xlib-surface) features)
 						   features))
-			   (reduce #'(lambda (fs fc) (cons (car fc) fs)) *fc-pairs* :initial-value nil))))))
+			   (reduce #'(lambda (fs fc) (cons (car fc) fs)) *fc-map* :initial-value nil))))))
 
   (defmacro define-cl-cairo2-system ()
 	(multiple-value-bind (components features) (configure-cl-cairo2-components)
