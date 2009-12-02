@@ -71,77 +71,73 @@
 ;;;SWIG wrapper code ends here
 
 
-(cl:defconstant CAIRO_VERSION_MAJOR 1)
+;(cl:defconstant CAIRO_VERSION_MAJOR 1)
 
-(cl:defconstant CAIRO_VERSION_MINOR 6)
+;(cl:defconstant CAIRO_VERSION_MINOR 6)
 
-(cl:defconstant CAIRO_VERSION_MICRO 4)
+;(cl:defconstant CAIRO_VERSION_MICRO 4)
 
-(cl:defconstant CAIRO_HAS_SVG_SURFACE 1)
+;(cl:defconstant CAIRO_HAS_SVG_SURFACE 1)
 
-(cl:defconstant CAIRO_HAS_PDF_SURFACE 1)
+;(cl:defconstant CAIRO_HAS_PDF_SURFACE 1)
 
-(cl:defconstant CAIRO_HAS_PS_SURFACE 1)
+;(cl:defconstant CAIRO_HAS_PS_SURFACE 1)
 
-(cl:defconstant CAIRO_HAS_FT_FONT 1)
+;(cl:defconstant CAIRO_HAS_PNG_FUNCTIONS 1)
 
-(cl:defconstant CAIRO_HAS_PNG_FUNCTIONS 1)
+(cl:defconstant CAIRO_HAS_WIN32_FONT 1)
 
-(cl:defconstant CAIRO_HAS_QUARTZ_IMAGE_SURFACE 1)
+(cl:defconstant CAIRO_HAS_WIN32_SURFACE 1)
 
-(cl:defconstant CAIRO_HAS_QUARTZ_FONT 1)
+(cffi:defcfun ("cairo_win32_surface_create" cairo_win32_surface_create) :pointer
+  (hdc :pointer))
 
-(cl:defconstant CAIRO_HAS_QUARTZ_SURFACE 1)
+(cffi:defcfun ("cairo_win32_printing_surface_create" cairo_win32_printing_surface_create) :pointer
+  (hdc :pointer))
 
-(cl:defconstant CAIRO_HAS_XLIB_XRENDER_SURFACE 1)
-
-(cl:defconstant CAIRO_HAS_XLIB_SURFACE 1)
-
-(cffi:defcfun ("cairo_ft_font_face_create_for_pattern" cairo_ft_font_face_create_for_pattern) :pointer
-  (pattern :pointer))
-
-(cffi:defcfun ("cairo_ft_font_options_substitute" cairo_ft_font_options_substitute) :void
-  (options :pointer)
-  (pattern :pointer))
-
-(cffi:defcfun ("cairo_ft_font_face_create_for_ft_face" cairo_ft_font_face_create_for_ft_face) :pointer
-  (face :pointer)
-  (load_flags :int))
-
-(cffi:defcfun ("cairo_ft_scaled_font_lock_face" cairo_ft_scaled_font_lock_face) :pointer
-  (scaled_font :pointer))
-
-(cffi:defcfun ("cairo_ft_scaled_font_unlock_face" cairo_ft_scaled_font_unlock_face) :void
-  (scaled_font :pointer))
-
-(cffi:defcfun ("cairo_xlib_surface_create_with_xrender_format" cairo_xlib_surface_create_with_xrender_format) :pointer
-  (dpy :pointer)
-  (drawable :pointer)
-  (screen :pointer)
+(cffi:defcfun ("cairo_win32_surface_create_with_ddb" cairo_win32_surface_create_with_ddb) :pointer
+  (hdc :pointer)
   (format :pointer)
   (width :int)
   (height :int))
 
-(cffi:defcfun ("cairo_xlib_surface_get_xrender_format" cairo_xlib_surface_get_xrender_format) :pointer
-  (surface :pointer))
-
-(cffi:defcfun ("cairo_quartz_surface_create" cairo_quartz_surface_create) :pointer
+(cffi:defcfun ("cairo_win32_surface_create_with_dib" cairo_win32_surface_create_with_dib) :pointer
   (format :pointer)
-  (width :unsigned-int)
-  (height :unsigned-int))
+  (width :int)
+  (height :int))
 
-(cffi:defcfun ("cairo_quartz_surface_create_for_cg_context" cairo_quartz_surface_create_for_cg_context) :pointer
-  (cgContext :pointer)
-  (width :unsigned-int)
-  (height :unsigned-int))
-
-(cffi:defcfun ("cairo_quartz_surface_get_cg_context" cairo_quartz_surface_get_cg_context) :pointer
+(cffi:defcfun ("cairo_win32_surface_get_dc" cairo_win32_surface_get_dc) :pointer
   (surface :pointer))
 
-(cffi:defcfun ("cairo_quartz_font_face_create_for_cgfont" cairo_quartz_font_face_create_for_cgfont) :pointer
+(cffi:defcfun ("cairo_win32_surface_get_image" cairo_win32_surface_get_image) :pointer
+  (surface :pointer))
+
+(cffi:defcfun ("cairo_win32_font_face_create_for_logfontw" cairo_win32_font_face_create_for_logfontw) :pointer
+  (logfont :pointer))
+
+(cffi:defcfun ("cairo_win32_font_face_create_for_hfont" cairo_win32_font_face_create_for_hfont) :pointer
   (font :pointer))
 
-(cffi:defcfun ("cairo_quartz_font_face_create_for_atsu_font_id" cairo_quartz_font_face_create_for_atsu_font_id) :pointer
-  (font_id :pointer))
+(cffi:defcfun ("cairo_win32_font_face_create_for_logfontw_hfont" cairo_win32_font_face_create_for_logfontw_hfont) :pointer
+  (logfont :pointer)
+  (font :pointer))
+
+(cffi:defcfun ("cairo_win32_scaled_font_select_font" cairo_win32_scaled_font_select_font) :pointer
+  (scaled_font :pointer)
+  (hdc :pointer))
+
+(cffi:defcfun ("cairo_win32_scaled_font_done_font" cairo_win32_scaled_font_done_font) :void
+  (scaled_font :pointer))
+
+(cffi:defcfun ("cairo_win32_scaled_font_get_metrics_factor" cairo_win32_scaled_font_get_metrics_factor) :double
+  (scaled_font :pointer))
+
+(cffi:defcfun ("cairo_win32_scaled_font_get_logical_to_device" cairo_win32_scaled_font_get_logical_to_device) :void
+  (scaled_font :pointer)
+  (logical_to_device :pointer))
+
+(cffi:defcfun ("cairo_win32_scaled_font_get_device_to_logical" cairo_win32_scaled_font_get_device_to_logical) :void
+  (scaled_font :pointer)
+  (device_to_logical :pointer))
 
 

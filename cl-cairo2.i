@@ -2,6 +2,7 @@
 
 %include "common.i"
 
+%include "cairo-version.h"
 %include "cairo-features.h"
 %include "cairo-deprecated.h"
 %include "cairo.h"
