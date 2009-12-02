@@ -7,7 +7,7 @@
 ;;;; version of library.
 
 (define-foreign-library :libcairo
-  (cffi-features:darwin	"libcairo.dylib")
+  (cffi-features:darwin	"libcairo.2.dylib")
   (cffi-features:unix (:or "libcairo.so.2" "libcairo.so"))
   (cffi-features:windows	"libcairo-2.dll"))
 
