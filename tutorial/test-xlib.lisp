@@ -6,8 +6,8 @@
 (defparameter *max-number-of-contexts* 50)
 
 (defun x-on-window (context)
-  (let ((width (get-width context))
-	(height (get-height context)))
+  (let ((width (image-surface-get-width context))
+	(height (image-surface-get-height context)))
     ;; clear
     (rectangle 0 0 width height context)
     (set-source-color +white+ context)
@@ -49,3 +49,4 @@
 (x-on-window *c2*)
 
 (destroy *c1*)
+(destroy *c2*)

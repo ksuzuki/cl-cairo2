@@ -24,6 +24,7 @@
 									   (:file "cl-cairo2-xlib-swig" :depends-on ("cl-cairo2-swig"))
 									   (:file "libraries-x11" :depends-on ("cl-cairo2-xlib-swig"))
 									   (:file "xlib" :depends-on ("libraries-x11"))
+									   (:file "xlib-context" :depends-on ("xlib"))
 									   (:file "xlib-image-context" :depends-on ("xlib"))))
 
   (defparameter *cairo-quartz-surface* '((:file "package-quartz" :depends-on ("package"))
