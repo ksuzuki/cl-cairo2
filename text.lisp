@@ -111,3 +111,12 @@
 (define-flexible (get-font-extents ctx-pointer)
   (with-font-extents-t-out fet-pointer
 	(cairo_font_extents ctx-pointer fet-pointer)))
+
+(defmacro with-cairo-font ((cairo-font &optional (context '*context*))
+						   &body body)
+  "Execute body with the specified cairo-font which is guaranteed to be
+destroyed at the end."
+  `(with-context-pointer (,context pointer)
+	 (cairo_set_font_face pointer ,cairo-font)
+	 (unwind-protect (progn ,@body)
+	   (cairo_font_face_destroy ,cairo-font))))

@@ -1,7 +1,11 @@
 (in-package :cl-cairo2)
 
-(export '(cairo-quartz-font-face-create-for-atsu-font-id
-		  cairo-quartz-font-face-create-for-cgfont
-		  cairo-quartz-surface-create
-		  cairo-quartz-surface-create-for-cg-context
-		  cairo-quartz-surface-get-cg-context))
+(export '(create-quartz-font-face-for-cgfont
+		  create-quartz-surface
+		  create-quartz-surface-for-cg-context
+		  #-x86-64 create-quartz-font-face-for-atsu-font-id
+		  get-quartz-surface-cg-context
+		  #-x86-64 with-quartz-atsu-font
+		  with-quartz-cg-font
+		  with-quartz-cg-context
+		  with-quartz-context))

@@ -1,7 +1,10 @@
 (in-package :cl-cairo2)
 
-;;;; Loading X11 libraries - you are supposed to set them up on the path where
-;;;; the system loader looks up.
+;;;; Loading X11 library - you are supposed to set it up on the path where
+;;;; the system's library loader looks up.
+;;;; Also, the library search order should look like below because on Mac both
+;;;; 'darwin' and 'unix' are defined in *feature* and we want to load .dylib
+;;;; version of library.
 
 (define-foreign-library :libX11
   (:darwin "libX11.dylib")

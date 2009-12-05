@@ -1,13 +1,15 @@
 (in-package :cl-cairo2)
 
-(export '(win32-create-font-face-for-hfont
-		  win32-create-font-face-for-logfontw
-		  #|win32-create-font-face-for-logfontw-hfont|#
-		  win32-create-surface
-		  win32-done-font-scaled-font
-		  win32-get-device-to-logical-scaled-font
-		  win32-get-metrics-factor-scaled-font
-		  win32-get-surface-dc
-		  win32-get-surface-image
-		  win32-select-font-scaled-font
-		  with-win32-context))
+(export '(create-win32-font-face-for-hfont
+		  create-win32-font-face-for-logfontw
+		  #|create-win32-font-face-for-logfontw-hfont|#
+		  create-win32-surface
+		  done-win32-font-scaled-font
+		  get-win32-device-to-logical-scaled-font
+		  get-win32-metrics-factor-scaled-font
+		  get-win32-surface-dc
+		  get-win32-surface-image
+		  select-win32-font-scaled-font
+		  with-win32-context
+		  with-win32-font-hfont
+		  with-win32-font-logfontw))

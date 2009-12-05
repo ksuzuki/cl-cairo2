@@ -16,7 +16,7 @@
   (arg0 :pointer) 
   (arg1 :pointer))
 
-(defun win32-create-surface (hwnd hdc)
+(defun create-win32-surface (hwnd hdc)
   (let ((width 0)
 		(height 0)
 		(surface (make-instance 'surface :width 0 :height 0 :pixel-based-p t)))
@@ -35,28 +35,26 @@
 	;;
 	(values surface width height)))
 
-(defun win32-get-surface-dc (surface)
+(defun get-win32-surface-dc (surface)
   (let ((hdc (cairo_win32_surface_get_dc (slot-value surface 'pointer))))
 	(if (null-pointer-p hdc)
 		nil
 		hdc)))
 
-(defun win32-get-surface-image (surface)
+(defun get-win32-surface-image (surface)
   (let ((image-surface (cairo_win32_surface_get_image (slot-value surface 'pointer))))
 	(if (null-pointer-p image-surface)
 		nil
 		image-surface)))
 
-(defmacro with-win32-context ((context hwnd hdc width height 
-				       &optional (surface-name (gensym)))
-			      &body body)
-  (once-only (context)
-    `(multiple-value-bind (,surface-name ,width ,height)
-	 (win32-create-surface ,hwnd ,hdc)
-	 (let ((,context (create-context ,surface-name)))
+(defmacro with-win32-context ((hwnd hdc width height &optional (surface-name (gensym)))
+							  &body body)
+  `(multiple-value-bind (,surface-name ,width ,height)
+	   (create-win32-surface ,hwnd ,hdc)
+	 (let ((*context* (create-context ,surface-name)))
 	   (unwind-protect (progn ,@body)
 		 (progn
-		   (destroy ,context)
+		   (destroy *context*)
 		   (destroy ,surface-name))))))
 
 ;;;
@@ -79,26 +77,38 @@
   (lfPitchAndFamily :unsigned-char) 
   (lfFaceName :pointer))
 
-(defun win32-create-font-face-for-logfontw (logfontw)
+(defun create-win32-font-face-for-logfontw (logfontw)
   (cairo_win32_font_face_create_for_logfontw logfontw))
 
-(defun win32-create-font-face-for-hfont (hfont)
+(defun create-win32-font-face-for-hfont (hfont)
   (cairo_win32_font_face_create_for_hfont hfont))
 
-#|(defun win32-create-font-face-for-logfontw-hfont (logfontw hfont)
+#|(defun create-win32-font-face-for-logfontw-hfont (logfontw hfont)
   (cairo_win32_font_face_create_for_logfontw_hfont logfontw hfont))|#
 
-(defun win32-select-font-scaled-font (scaled-font hdc)
+(defun select-win32-font-scaled-font (scaled-font hdc)
   (let ((status (cairo_win32_scaled_font_select_font scaled-font hdc)))
 	(if (eq status :success)
 		t
 		(warn "function returned with status ~A." status))))
 
-(defun win32-done-font-scaled-font (scaled-font)
+(defun done-win32-font-scaled-font (scaled-font)
   (cairo_win32_scaled_font_done_font scaled-font))
 
-(defun win32-get-metrics-facotor-scaled-font (scaled-font)
+(defun get-win32-metrics-factor-scaled-font (scaled-font)
   (cairo_win32_scaled_font_get_metrics_factor scaled-font))
 
-(defun win32-get-device-to-logical-scaled-font (scaled-font device-to-logical)
+(defun get-win32-device-to-logical-scaled-font (scaled-font device-to-logical)
   (cairo_win32_scaled_font_get_device_to_logical scaled-font device-to-logical))
+
+(defmacro with-win32-font-logfontw ((logfontw &optional (context '*context*))
+									&body body)
+  (let ((cfft (gensym)))
+	`(let ((,cfft (create-win32-font-face-for-logfontw ,logfontw)))
+	   (with-cairo-font (,cfft ,context) ,@body))))
+
+(defmacro with-win32-font-hfont ((hfont &optional (context '*context*))
+								 &body body)
+  (let ((cfft (gensym)))
+	`(let ((,cfft (create-win32-font-face-for-hfont ,hfont)))
+	   (with-cairo-font (,cfft ,context) ,@body))))

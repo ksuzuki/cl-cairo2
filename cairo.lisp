@@ -1,8 +1,8 @@
 (in-package :cl-cairo2)
 
 ;;;; Loading Cairo library - you are supposed to set it up on the path where
-;;;; the system loader looks up.
-;;;; Also the library search order should look like below because on Mac both
+;;;; the system's library loader looks up.
+;;;; Also, the library search order should look like below because on Mac both
 ;;;; 'darwin' and 'unix' are defined in *feature* and we want to load .dylib
 ;;;; version of library.
 
