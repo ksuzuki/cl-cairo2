@@ -102,7 +102,10 @@
 
 (defun run ()
   (ccl::with-autorelease-pool
-    (let* ((r (ns:make-ns-rect 110 110 600 600))
+    (let* ((h (pref (#/visibleFrame (#/mainScreen ns:ns-screen)) #>NSRect.size.height))
+		   (d 50)
+		   (s 600)
+		   (r (ns:make-ns-rect d (- h s d) s s))
            (w (make-instance 
 			   'ns:ns-window
 			   :init-with-content-rect r
