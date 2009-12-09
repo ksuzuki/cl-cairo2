@@ -38,26 +38,26 @@
 
   ;; feature-component map
   (defparameter *fc-map* (list (cons :cl-cairo2-base *base*)
-							   #-(or windows windows-target)
+							   #-(and (or windows windows-target) (not cl-cairo2-use-xlib))
 							   (cons :cl-cairo2-xlib *xlib*)
 							   #+(or darwin darwin-target)
 							   (cons :cl-cairo2-quartz *quartz*)
 							   #+(or windows windows-target)
 							   (cons :cl-cairo2-win32 *win32*)
-							   #+cl-cairo2-gdk
+							   #+cl-cairo2-use-gdk
 							   (cons :cl-cairo2-gdk *gdk*)))
 
   (defmacro defsystem-cl-cairo2 (components)
 	`(defsystem cl-cairo2
 	   :description "Cairo 1.6 bindings"
-	   :version "0.5.1"
+	   :version "0.6"
 	   :author "Tamas K Papp (contributors: Kei Suzuki)"
 	   :license "GPL"
 	   :components ,components
 	   :depends-on (:cffi :cl-colors :cl-utilities :trivial-garbage :trivial-features)))
 
   (defun configure-components ()
-	(if (member :cl-cairo2-base-only *features*)
+	(if (member :cl-cairo2-use-base-only *features*)
 		(values '(:cl-cairo2-base)
 				*base*)
 		(let ((features (reduce #'(lambda (fs fc) (if (member (car fc) *features*)

@@ -1,24 +1,81 @@
-Note: binding for Quartz surface is not available yet.
+1. Notes about loading libcairo2.dylib
+======================================
 
-Tested Environments
-===================
+If you did load cl-cairo2 already, congratulations! You do not need to read
+on this section. If you are getting trouble loading cl-cairo2, go on.
 
-Mac OS X 10.5.4: SBCL_1.0.16, libciaro_1.6.4, libpng_1.2.29, zlib_1.2.3
+First, your libcairo2.dylib may not be installed in a directory where dlopen
+(the function which loads and links a dynamic library/bundle on Mac) looks
+in. Then you may need to let CFFI know where libcairo2.dylib is by setting
+the location to CFFI:*FOREIGN-LIBRARY-DIRECTORIES*. For example, MacPorts
+installs libcairo2.dylib in /usr/local/lib. So you may want to do like this:
+
+(pushnew "/opt/local/lib/" cffi:*foreign-library-directories*)
+
+Second, you may also want to load libcairo2.dylib BEFORE Swank server is
+started, if you are going to connect to the Lisp system using Slime. I do
+not know exactly why it helps, but the Lisp system seems fail to load
+libcairo2.dylib otherwise.
+
+Third important trick to load libcario2.dylib successfully is, it seems that
+it needs to preload at least Mac OS's CoreFoundation framework prior to loading
+libcairo2.dylib. Again, I do not know exactly why; those required core  
+frameworks are listed in the libcairo2.dylib as its dependents (you can look at
+them using otool with -L option) and dlopen is supposed to load them before
+loading libcairo2.dylib. But, things do not work as expect. Anyhow, this
+trick helps loading libcairo2.dylib. So for example, with SBCL you can load
+libcairo2.dylib by doing like this:
+
+(load-shared-object "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")
+(asdf:load-system :cffi)
+(pushnew "/opt/local/lib/" cffi:*foreign-library-directories*)
+(asdf:load-system :cl-cairo2)
+
+If you skip the first step to load CoreFoundation, SBCL hangs.
+
+With Clozure CL even this trick does not work somehow. But if you use the
+Cocoa IDE version of Clozure CL, you can load libcairo2.dylib using the code
+like this:
+
+(asdf:load-system :cffi)
+(pushnew "/opt/local/lib/" cffi:*foreign-library-directories*)
+(asdf:load-system :cl-cairo2)
+
+So put the above code in your ccl-init file so that it is run by the Cocoa
+IDE version of Clozure CL when it starts.
 
 
-libcairo.dylib
-==============
+2. Enabling the Quartz Surface in libcairo2.dylib
+=================================================
 
-Build from the 1.6.4 release snapshot with the following option enabled at
-./configure time:
-  --enable-quartz-image
+If you are going to build libcario2.dylib by yourself, make sure of enalbing
+the Quartz surface by adding the following options when you run ./configure.
 
-The latest MacPorts build of libcairo (1.6.4 at this time) has an issue with
-cl-cairo2 (e.g. cairo_show_text returns STATUS_NO_MEMORY).
+--enable-quartz --enable-quartz-font --enable-quartz-image
+
+If you are going to install libcairo2.dylib using MacPorts, run port install
+command like this:
+
+sudo port install cairo +quartz
 
 
-Swig Used to Generate cl-cairo2-mac-swig.lisp
-=============================================
+3. Tested Environments
+======================
 
-MacPorts Swig, version 1.3.36
+OS: Mac OS X 10.6.2
+Cairo version: 1.8.8 with Quartz enabled
+Lisp system: Clozure CL 1.4 64bit
 
+
+4. Libcairo2.dylib Used
+=======================
+
+It's MacPorts libcairo2.dylib, installed using the port command like this:
+
+sudo port install cairo +quartz
+
+
+5. Swig Used to Generate package-quartz.lisp
+============================================
+
+MacPorts Swig 1.3.40_1

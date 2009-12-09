@@ -1,0 +1,88 @@
+INSTALLING and LOADING cl-cairo2
+
+Installing cl-cairo2
+====================
+
+cl-cairo2 uses ASDF to load required components and CFFI to load the
+libcairo library. Make sure that cl-cairo2.asd (and its componets, if
+cl-cairo2.asd is not symliked) is in the directory listed in your
+ASDF:*CENTRAL-REGISTRY*. You may also need to make sure that CFFI can find 
+the libcairo library. Normally placing it in a directory searched by the
+system's library loader by default, such as /usr/lib on Unix and one in the
+PATH environment variable on Windows, should be suffice. For Mac you might
+require additional setup. Please read README.mac for more details. 
+
+Loading cl-cairo2
+=================
+
+You can load cl-cairo2 using ASDF:LOAD-SYSTEM command like this:
+
+(asdf:load-system :cl-cairo2)
+
+By default cl-cairo2.asd figures out necessary components for your system
+automatically. The base component that enables the base surfaces which are
+independent from the platform's rendering system (the Image surface, the PDF
+surface, the PostScript surface, the PNG surface, and the SVG surface) will
+be loaded always. Then depending on your platform, platform dependent
+components will be loaded.
+
+You can fine control which surfaces to enable using the cl-cairo2 specific
+feature keywords called the enabling keywords. 
+
+Enabling keyword                Description
+------------------------------------------------------------------------------
+:cl-cairo2-use-xlib-context     By default, cl-cairo2 enables the XLib image
+                                context on Unix and Mac. When this keyword
+								is found in *FEATURES*, cl-cairo2 enables
+								the XLib context instead.
+
+:darwin							When one of these keywords is found in
+:darwin-target					*FEATURES*, cl-cairo2 enables the Qurtz
+								surface. These keywords will normally be set
+								in *FEATURES* automatically by the Lisp
+								system on Mac.
+
+
+:windows         				When one of these keywords is found in
+:windows-target					*FEATURES*, cl-cairo2 enables the Win32 surface
+								but does not enable the XLib surface unless
+                                cl-cairo2-use-xlib keyword is also found in
+                                *FEATURES*. These keywords will normally be
+								set in *FEATURES* automatically by the Lisp
+								system on Windows.
+
+:cl-cairo2-use-gdk-context		When this keyword is found in *FEATURES*,
+								cl-cairo2 enables the GDK context. Note that
+								the GDK context requires the XLib surface,
+								so the XLib surface will also be enabled.
+
+:cl-cairo2-use-base-only		When this keyword is found in *FEATURES*,
+								cl-cairo2 enables the base surfaces only and
+								does not enable any other surfaces.
+
+Normally you do not need to specify any enabling keywords, except for the
+GDK context. If you want to use GDK contexts, you have to specify
+:cl-cairo2-use-gdk-context explicitly in *FEATURES*.
+
+After loading the necessary components, cl-cairo2 puts the cl-cairo2
+specific keywords signifying the enabled surfaces and context. Those are
+called the signature keywords.
+
+Signature keyword               Description
+------------------------------------------------------------------------------
+:cl-cairo2-base					This keywod signifies that the base surfaces
+								are enabled. This keyword will be found in
+								*FEATURES* always.
+
+:cl-cairo2-xlib					This keyword signifies that the XLib surface
+								is enabled.
+
+:cl-cairo2-quartz				This keyword signifies that the Quartz
+								surface is enabled.
+
+:cl-cairo2-win32				This keyword signifies that the Win32
+								surface is enabled.
+
+:cl-cairo2-gdk					This keyword signifies that the GDK context
+								is available.
+

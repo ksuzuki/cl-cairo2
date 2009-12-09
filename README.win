@@ -1,17 +1,18 @@
-Tested Environments
-===================
+1. Tested Environments
+======================
 
-Windows XP+SP3/Vista+SP1: SBCL_1.0.13, libcairo-2_1.6.4, libpng_1.2.29, zlib_1.2.3
-
-
-Libcairo-2.dll
-==============
-
-Build from the 1.6.4 release snapshot on the MinGW system.
+OS: Windows XP+SP3
+Cairo version: 1.8.8
+Lisp system: SBCL 1.0.33
 
 
-Swig Used to Generate cl-cairo2-win-swig.lisp
-=============================================
+2. Libcairo-2.dll Used
+======================
 
-version: 1.3.36
-A build from the platform-independent source on the MinGW system, not Swigwin.
+Built from the 1.8.8 release snapshot on the MinGW system
+
+
+3. Swig Used to Generate package-win32.lisp
+===========================================
+
+MacPorts Swig 1.3.40_1
