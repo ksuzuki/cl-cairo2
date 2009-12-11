@@ -70,8 +70,8 @@
 								  *fc-map* :initial-value nil)))
 		  (if features
 			  (let ((base (if (member :cl-cairo2-base features)
-							nil
-							*base*)))
+							  nil
+							  *base*)))
 				(if (and (member :cl-cairo2-gdk features) (not (member :cl-cairo2-xlib features)))
 					(values (append '(:cl-cairo2-base :cl-cairo2-xlib) features)
 							(append base *xlib* components))

@@ -102,23 +102,23 @@
 
 (defun run ()
   (ccl::with-autorelease-pool
-    (let* ((h (pref (#/visibleFrame (#/mainScreen ns:ns-screen)) #>NSRect.size.height))
-		   (d 50)
-		   (s 600)
-		   (r (ns:make-ns-rect d (- h s d) s s))
-           (w (make-instance 
-			   'ns:ns-window
-			   :init-with-content-rect r
-			   :style-mask (logior #$NSTitledWindowMask 
-								   #$NSClosableWindowMask 
-								   #$NSMiniaturizableWindowMask
-								   #$NSResizableWindowMask)
-			   :backing #$NSBackingStoreBuffered
-			   :defer t)))
-      (#/setTitle: w #@"lissajous")
-      (let ((my-view (make-instance 'lissajous-view :with-frame r)))
-        (#/setContentView: w my-view)
-        (#/setDelegate: w my-view))
-      (#/performSelectorOnMainThread:withObject:waitUntilDone:
-       w (objc:@selector "makeKeyAndOrderFront:") nil nil)
-      w)))
+	  (let* ((h (pref (#/visibleFrame (#/mainScreen ns:ns-screen)) #>NSRect.size.height))
+			 (d 50)
+			 (s 600)
+			 (r (ns:make-ns-rect d (- h s d) s s))
+			 (w (make-instance 
+				 'ns:ns-window
+				 :init-with-content-rect r
+				 :style-mask (logior #$NSTitledWindowMask 
+									 #$NSClosableWindowMask 
+									 #$NSMiniaturizableWindowMask
+									 #$NSResizableWindowMask)
+				 :backing #$NSBackingStoreBuffered
+				 :defer t)))
+		(#/setTitle: w #@"lissajous")
+		(let ((my-view (make-instance 'lissajous-view :with-frame r)))
+		  (#/setContentView: w my-view)
+		  (#/setDelegate: w my-view))
+		(#/performSelectorOnMainThread:withObject:waitUntilDone:
+		 w (objc:@selector "makeKeyAndOrderFront:") nil nil)
+		w)))

@@ -31,10 +31,10 @@
 								  &body body)
   `(let* ((,surface-name (create-quartz-surface-for-cg-context ,cg-context-ref ,width ,height))
 		  (*context* (create-context ,surface-name)))
-	   (unwind-protect (progn ,@body)
-		 (progn
-		   (destroy *context*)
-		   (destroy ,surface-name)))))
+	 (unwind-protect (progn ,@body)
+	   (progn
+		 (destroy *context*)
+		 (destroy ,surface-name)))))
 
 #-x86-64
 (defmacro with-quartz-atsu-font ((atsu-font-id &optional (context '*context*))
@@ -44,7 +44,7 @@
 	   (with-cairo-font (,cfft ,context) ,@body))))
 
 (defmacro with-quartz-cg-font ((cgfont-ref &optional (context '*context*))
-								 &body body)
+							   &body body)
   (let ((cfft (gensym)))
 	`(let ((,cfft (create-quartz-font-face-for-cgfont ,cgfont-ref)))
 	   (with-cairo-font (,cfft ,context) ,@body))))
@@ -53,7 +53,7 @@
 							   &body body)
   `(let* ((,surface-name (create-quartz-surface (lookup-enum ,format table-format) ,width ,height))
 		  (*context* (create-context ,surface-name)))
-	   (unwind-protect (progn ,@body)
-		 (progn
-		   (destroy *context*)
-		   (destroy ,surface-name)))))
+	 (unwind-protect (progn ,@body)
+	   (progn
+		 (destroy *context*)
+		 (destroy ,surface-name)))))
