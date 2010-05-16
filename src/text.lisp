@@ -37,6 +37,14 @@
 
 (define-with-default-context-sync show-text text)
 
+(defmacro with-cairo-font ((cairo-font &optional (context '*context*)) &body body)
+  "Execute body with the specified cairo-font which is guaranteed to be
+destroyed at the end."
+  `(with-context-pointer (,context pointer)
+     (cairo_set_font_face pointer ,cairo-font)
+     (unwind-protect (progn ,@body)
+       (cairo_font_face_destroy ,cairo-font))))
+
 ;;;
 ;;; low level text and font support
 ;;;

@@ -60,6 +60,7 @@
    font-ascent font-descent font-height
    font-max-x-advance font-max-y-advance
    get-font-extents
+   with-cairo-font
 
    ;; transformations
 
